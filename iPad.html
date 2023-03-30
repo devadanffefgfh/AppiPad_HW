@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1{
+
+        }
+        #color-container{
+            display: flex;
+            /* background-color: red; */
+            
+        }
+        .color-button{
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>購買iPad Air</h1>
+    <button id="color_btn">檢視顏色</button>
+ 
+
+    <select id="select1">
+        <option value="none">選取顏色</option>
+    </select>
+    <select id="select2">
+        <option value="none">選取容量</option>
+    </select>
+    <select id="select3">
+        <option value="none">選取網路</option>
+    </select>
+    <button id="checkout">確定</button>
+    <!-- <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/ipad-air-finish-select-gallery-202211-blue?" alt=""> -->
+    <div id="msg"></div>
+    <main></main>
+    <img  id="iPad_Color" src="" alt="">
+    <!-- <div class="container">
+        <div class="pic">
+            <img src="" alt="">
+        </div>
+        <div class="text">
+            <h2></h2>
+        </div>
+    </div> -->
+   
+
+    <script>
+        let ipadObject,NewproductColor,Newproductstorage,Newproductnetwork;
+    </script>
+    <script>
+        const url = "https://raw.githubusercontent.com/devadanffefgfh/ipadair_json/main/ipadAir.json";
+        
+        // let xhr1 = new XMLHttpRequest();
+        // let xhr2 = new XMLHttpRequest();
+        // let xhr3 = new XMLHttpRequest();
+        let ipadArray=[];
+
+        function ChooseColor(){
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                ipadArray = this.response;
+                let productColor = ipadObject.map(item => item.color)
+                let uniqueColors = [...new Set(productColor)]
+                console.log(uniqueColors);
+                let colorlistHtml = "";
+                let container = document.createElement("div");
+                container.setAttribute("id","color-container");
+                uniqueColors.forEach((color,index)=>{
+                    colorlistHtml += `<button class="color-button" id="color${index + 1}">${color}</button>`;
+                    console.log(color)
+                    
+                })
+                container.innerHTML = colorlistHtml;
+                // let colorlist = `
+                //     <div id="container">
+                //         <button id="color1">太空灰色</button>
+                //         <button id="color2">藍色</button>
+                //         <button id="color3">粉紅色</button>
+                //         <button id="color4">星光色</button>
+                //         <button id="color5">紫色</button>
+                //     </div>
+                // `
+                let main = document.querySelector("main");
+                
+                
+
+                let colorContainer = main.querySelector("#color-container"); // 檢查是否已經有顏色選擇按鈕
+                if (colorContainer) {
+                    // colorContainer.remove(); // 移除顏色選擇按鈕
+                   let existingButtons = document.querySelector("#color-container");
+                
+                    existingButtons.remove(); // 刪除已存在的按鈕
+                } 
+                else {
+                    // main.innerHTML += colorlistHtml; // 顯示顏色選擇按鈕
+                    main.appendChild(container);
+                }
+                // let imgsrc = []; 測試
+                // imgsrc = ipadArray.filter(item => item.color=="藍色");
+                // console.log(imgsrc);
+                console.log("/".repeat(10));
+                console.log(uniqueColors)
+                // document.querySelector("#color1").addEventListener("click",Viewcolorbtn_gray);
+                uniqueColors.forEach((color, index) => {
+                    let colorButton = document.querySelector(`#color${index + 1}`);
+                    if (colorButton) {
+                        colorButton.addEventListener("click", function() {
+                            Viewcolorbtn(color);
+                        });
+                    }
+                });
+            }
+            
+            xhr.open('GET',url);
+            xhr.responseType="json";
+            xhr.send();
+        }
+        function selectType1() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                let select = document.getElementById('select1')
+                ipadObject = JSON.parse(this.responseText);
+                let productColor = ipadObject.map(item => item.color)
+                NewproductColor = [...new Set(productColor)]
+
+                NewproductColor.forEach(item => {
+                    let option = document.createElement('option')
+                    option.innerText = item
+                    option.value = item
+                    select.appendChild(option)
+                })
+                
+                // let ipadArray = this.response;
+                // let query = ipadArray.filter( item => item.color == NewproductColor );
+                // console.log(query)
+            }
+            NewproductColor = document.getElementById('select1').value;
+
+            xhr.open('GET',url);
+            
+            xhr.send();
+        }
+        function selectType2() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                let select = document.getElementById('select2')
+                ipadObject = JSON.parse(this.responseText);
+                let productstorage = ipadObject.map(item => item.storage)
+                Newproductstorage = [...new Set(productstorage)]
+
+                Newproductstorage.forEach(item => {
+                    let option = document.createElement('option')
+                    option.innerText = item
+                    option.value = item
+                    select.appendChild(option)
+                })
+            } 
+            xhr.open('GET',url);
+            
+            xhr.send();
+        }
+        function selectType3() {
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                let select = document.getElementById('select3')
+                ipadObject = JSON.parse(this.responseText);
+                let productnetwork = ipadObject.map(item => item.network)
+                Newproductnetwork = [...new Set(productnetwork)]
+
+                Newproductnetwork.forEach(item => {
+                    let option = document.createElement('option')
+                    option.innerText = item
+                    option.value = item
+                    select.appendChild(option)
+                })
+            } 
+            xhr.open('GET',url);  
+            xhr.send();
+        }
+        function requestIpadJson(){
+            let xhr = new XMLHttpRequest();
+            NewproductColor = document.getElementById('select1').value;
+            Newproductstorage = document.getElementById('select2').value;
+            Newproductnetwork = document.getElementById('select3').value;
+            let msg = document.getElementById("msg");
+            msg.innerHTML = "";
+            
+           
+            
+            xhr.onload = function(){
+                ipadArray = this.response;
+                
+                let query = ipadArray.filter( item => item.color == NewproductColor && item.storage == Newproductstorage && item.network==Newproductnetwork);
+                console.log(query);
+                
+                query.forEach(item=>{
+                    // let {price} = item;
+                    const price = item.price;
+                    let priceElement = document.createElement("p");
+                    let ipadpicture = document.createElement("img");
+                    
+                    ipadpicture.src = item.picture;
+
+                    console.log(ipadpicture.src);
+                    console.log(ipadpicture);
+                    msg.append(ipadpicture);
+                    priceElement.textContent = `Price: ${price}元`;
+                    // msg.append(`${item.price}元`);
+                    msg.append(priceElement);
+                })
+
+            }
+            xhr.open("GET", url);
+            xhr.responseType="json";
+            xhr.send();
+        }
+        function Viewcolorbtn(color){
+            let xhr = new XMLHttpRequest();
+         
+            let msg = document.getElementById("msg");
+            msg.innerHTML = "";
+            
+           
+            
+            xhr.onload = function(){
+                ipadArray = this.response;
+                let imgsrc = [];
+                
+                let query = ipadArray.filter( item => item.color==color);
+                console.log(query);
+                console.log("//".repeat(10));
+
+                imgsrc = query[0].picture;
+                console.log(imgsrc);
+                
+                console.log("www");
+                console.log(query);
+                let ipadpicture = document.createElement("img");
+                    
+                ipadpicture.src = imgsrc;
+                msg.append(ipadpicture);
+             
+            }
+            xhr.open("GET", url);
+            xhr.responseType="json";
+            xhr.send();
+        }
+        window.onload = function(){
+            selectType1() 
+            selectType2() 
+            selectType3() 
+            
+            document.querySelector("#checkout").addEventListener("click",requestIpadJson);
+            let color_btn = document.getElementById("color_btn");
+            color_btn.addEventListener("click",function(event){
+                ChooseColor();
+            })
+            
+        }
+    </script>
+</body>
+</html>
